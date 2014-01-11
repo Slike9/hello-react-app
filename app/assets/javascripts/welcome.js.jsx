@@ -20,47 +20,56 @@ var TodoItem = React.createClass({
         'item-done': item.state == "done",
       });
       return item.state == "edit"
-        ? <form
-            className="form-inline"
-            onSubmit={this.handleSubmit}>
-            <div className="form-group">
-              <input
-                className="form-control"
-                value={item.text}
-                onChange={this.props.onItemChange.bind(null, item.id)}/>
-            </div>
-          </form>
-        : <div className={classes}>
-            <input type='checkbox' onChange={this.onDoneChange} checked={item.state == "done"}/>
-            <span className='item__text' onClick={this.props.onItemClick.bind(null, item)}>{item.text}</span>
+        ? <tr>
+            <td colSpan='2'>
+              <form
+                className="form-inline"
+                onSubmit={this.handleSubmit}>
+                <div className="form-group">
+                  <input
+                    className="form-control"
+                    value={item.text}
+                    onChange={this.props.onItemChange.bind(null, item.id)}/>
+                </div>
+              </form>
+            </td>
+          </tr>
+        : <tr className={classes}>
+            <td>
+              <input type='checkbox' onChange={this.onDoneChange} checked={item.state == "done"}/>
+              <span className='item__text' onClick={this.props.onItemClick.bind(null, item)}>{item.text}</span>
+            </td>
+            <td>
+              <div>
+                <button
+                  className="btn btn-xs btn-success item-done-btn"
+                  onClick={this.props.onItemDone.bind(null, this.props.item.id)}>
+                    Done
+                </button>
 
-            <button
-              className="btn btn-xs btn-success item-done-btn"
-              onClick={this.props.onItemDone.bind(null, this.props.item.id)}>
-                Done
-            </button>
-
-            <button
-              className="btn btn-xs btn-danger"
-              onClick={this.props.onItemDelete.bind(null, this.props.item.id)}>
-                Delete
-            </button>
-          </div>
+                <button
+                  className="btn btn-xs btn-danger"
+                  onClick={this.props.onItemDelete.bind(null, this.props.item.id)}>
+                    Delete
+                </button>
+              </div>
+            </td>
+          </tr>
     },
 
     render: function(){
-      return (
-        <li>
-          {this.renderItem(this.props.item)}
-        </li>
-      );
+      return this.renderItem(this.props.item);
     }
 });
 
 var TodoList = React.createClass({
     render: function(){
         return (
-          <ul>
+          <table className="table table-stropped">
+            <thead>
+              <tr><th/><th/></tr>
+            </thead>
+            <tbody>
               {this.props.items.map(function(item){
                 return <TodoItem item={item} onItemClick={this.props.onItemClick}
                     onItemChange={this.props.onItemChange}
@@ -69,7 +78,8 @@ var TodoList = React.createClass({
                     onItemDelete={this.props.onItemDelete}
                     onItemDoneChange={this.props.onItemDoneChange}/>;
               }.bind(this))}
-          </ul>);
+            </tbody>
+          </table>);
     }
 });
 
