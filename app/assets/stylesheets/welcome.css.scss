@@ -4,15 +4,26 @@
 
 .item-done {
   text-decoration: line-through;
+  color: gray;
+  background-color: lightgray;
   .item-done-btn {
     display: none;
+  }
+  .item__text {
+    cursor: default;
   }
 }
 
 .item__text {
   margin: 0 10px 0 10px;
+  cursor: pointer;
+  min-width: 10px;
 }
 
-#todo-app table {
-  width: 50%;
+td.item__doneMark {
+  width: 1px;
+}
+
+td.item__actions {
+  width: 150px;
 }
