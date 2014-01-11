@@ -66,9 +66,6 @@ var TodoList = React.createClass({
     render: function(){
         return (
           <table className="table table-stropped">
-            <thead>
-              <tr><th/><th/></tr>
-            </thead>
             <tbody>
               {this.props.items.map(function(item){
                 return <TodoItem item={item} onItemClick={this.props.onItemClick}
