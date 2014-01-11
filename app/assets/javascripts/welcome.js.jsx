@@ -14,9 +14,9 @@ var TodoItem = React.createClass({
     renderItem: function(item){
       var cx = React.addons.classSet;
       var classes = cx({
-        'item-done': item.done,
+        'item-done': item.state == "done",
       });
-      return item.edit
+      return item.state == "edit"
         ? <form onSubmit={this.handleSubmit}><input value={item.text}
                      onChange={this.props.onItemChange.bind(null, item.id)}/></form>
         : <div className={classes}>
@@ -66,8 +66,8 @@ var TodoApp = React.createClass({
     },
 
     onItemClick: function(item){
-      if (!item.done){
-        item.edit = true;
+      if (item.state != "done"){
+        item.state = "edit";
         this.setState({items: this.state.items});
       }
     },
@@ -80,13 +80,13 @@ var TodoApp = React.createClass({
 
     onItemEditDone: function(id){
       item = _.findWhere(this.state.items, {id: id});
-      item.edit = false;
+      item.state = "active";
       this.setState({items: this.state.items});
     },
 
     onItemDone: function(id){
       item = _.findWhere(this.state.items, {id: id});
-      item.done = true;
+      item.state = "done";
       this.setState({items: this.state.items});
     },
 
