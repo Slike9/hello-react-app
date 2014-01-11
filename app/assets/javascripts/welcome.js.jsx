@@ -20,8 +20,16 @@ var TodoItem = React.createClass({
         'item-done': item.state == "done",
       });
       return item.state == "edit"
-        ? <form onSubmit={this.handleSubmit}><input value={item.text}
-                     onChange={this.props.onItemChange.bind(null, item.id)}/></form>
+        ? <form
+            className="form-inline"
+            onSubmit={this.handleSubmit}>
+            <div className="form-group">
+              <input
+                className="form-control"
+                value={item.text}
+                onChange={this.props.onItemChange.bind(null, item.id)}/>
+            </div>
+          </form>
         : <div className={classes}>
             <input type='checkbox' onChange={this.onDoneChange} checked={item.state == "done"}/>
             <span className='item__text' onClick={this.props.onItemClick.bind(null, item)}>{item.text}</span>
