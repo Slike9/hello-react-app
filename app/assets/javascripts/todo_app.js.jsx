@@ -48,11 +48,24 @@ var TodoApp = React.createClass({
   getInitialState: function(){
     return {items: [], text: "", counter: 0};
   },
-
+  componentWillMount: function(){
+    this.loadState();
+  },
+  loadState: function(){
+    var stateString = localStorage.getItem('TODOApp.state');
+    if (stateString){
+      this.setState(JSON.parse(stateString));
+    }
+  },
+  saveState: function(updated){
+    localStorage.setItem('TODOApp.state', JSON.stringify(_.extend({}, this.state, updated)));
+  },
   handleSubmit: function(e){
     e.preventDefault();
     var new_items = this.state.items.concat([{text: this.state.text || new_item_placeholder, id: this.state.counter}]);
-    this.setState({text: "", items: this.orderItems(new_items), counter: this.state.counter + 1});
+    var updated = {text: "", items: this.orderItems(new_items), counter: this.state.counter + 1}
+    this.setState(updated);
+    this.saveState(updated);
   },
 
   onChange: function(e){
@@ -65,12 +78,14 @@ var TodoApp = React.createClass({
     if (itemProps.text)
       item.text = itemProps.text;
     this.setState({items: this.state.items});
+    this.saveState();
   },
 
   onItemStateChange: function(itemProps){
     var item = _.findWhere(this.state.items, {id: itemProps.id});
     item.state = itemProps.state;
     this.setState({items: this.orderItems(this.state.items)});
+    this.saveState();
   },
 
   orderItems: function(items){
@@ -81,8 +96,10 @@ var TodoApp = React.createClass({
   },
 
   onItemDelete: function(id){
+    console.log('deell');
     var newItems = _.reject(this.state.items, function(item) { return item.id == id });
     this.setState({items: newItems});
+    this.saveState({items: newItems});
   },
 
   render: function(){
