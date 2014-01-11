@@ -10,6 +10,9 @@ var TodoItem = React.createClass({
         e.preventDefault();
         this.props.onItemEditDone(this.props.item.id);
     },
+    onDoneChange: function(e){
+        this.props.onItemDoneChange(this.props.item.id, e.target.checked);
+    },
 
     renderItem: function(item){
       var cx = React.addons.classSet;
@@ -20,18 +23,19 @@ var TodoItem = React.createClass({
         ? <form onSubmit={this.handleSubmit}><input value={item.text}
                      onChange={this.props.onItemChange.bind(null, item.id)}/></form>
         : <div className={classes}>
-            <span onClick={this.props.onItemClick.bind(null, item)}>{item.text}</span>
-            <button className="item-done-btn" onClick={this.props.onItemDone.bind(null, this.props.item.id)}>Done</button>
-            <button onClick={this.props.onItemDelete.bind(null, this.props.item.id)}>Delete</button>
+            <input type='checkbox' onChange={this.onDoneChange}/>
+            <span className='item__text' onClick={this.props.onItemClick.bind(null, item)}>{item.text}</span>
+            <button className="btn btn-xs btn-success item-done-btn" onClick={this.props.onItemDone.bind(null, this.props.item.id)}>Done</button>
+            <button className="btn btn-xs btn-danger" onClick={this.props.onItemDelete.bind(null, this.props.item.id)}>Delete</button>
           </div>
     },
 
     render: function(){
-      return <div>
+      return (
         <li>
           {this.renderItem(this.props.item)}
         </li>
-      </div>
+      );
     }
 });
 
@@ -44,7 +48,8 @@ var TodoList = React.createClass({
                     onItemChange={this.props.onItemChange}
                     onItemEditDone={this.props.onItemEditDone}
                     onItemDone={this.props.onItemDone}
-                    onItemDelete={this.props.onItemDelete}/>;
+                    onItemDelete={this.props.onItemDelete}
+                    onItemDoneChange={this.props.onItemDoneChange}/>;
               }.bind(this))}
           </ul>);
     }
@@ -90,6 +95,12 @@ var TodoApp = React.createClass({
       this.setState({items: this.state.items});
     },
 
+    onItemDoneChange: function(id, done){
+      item = _.findWhere(this.state.items, {id: id});
+      item.state = done ? "done" : 'active';
+      this.setState({items: this.state.items});
+    },
+
     onItemDelete: function(id){
       var newItems = _.reject(this.state.items, function(item) { return item.id == id });
       this.setState({items: newItems});
@@ -98,16 +109,19 @@ var TodoApp = React.createClass({
     render: function(){
         return (
           <div>
-            <form onSubmit={this.handleSubmit}>
-              <input onChange={this.onChange} value={this.state.text}/>
-              <button>Submit</button>
+            <form className='form-inline' role='form' onSubmit={this.handleSubmit}>
+              <div className='form-group'>
+                <input className='form-control' onChange={this.onChange} value={this.state.text}/>
+              </div>
+              <button className='btn btn-primary'>Submit</button>
             </form>
             <TodoList items={this.state.items}
                 onItemClick={this.onItemClick}
                 onItemChange={this.onItemChange}
                 onItemEditDone={this.onItemEditDone}
                 onItemDone={this.onItemDone}
-                onItemDelete={this.onItemDelete}/>
+                onItemDelete={this.onItemDelete}
+                onItemDoneChange={this.onItemDoneChange}/>
           </div>
         );
     }
