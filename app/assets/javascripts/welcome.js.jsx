@@ -11,11 +11,27 @@ var TodoItem = React.createClass({
         this.props.onItemEditDone(this.props.item.id);
     },
 
+    renderItem: function(item){
+      var cx = React.addons.classSet;
+      var classes = cx({
+        'item-done': item.done,
+      });
+      return item.edit
+        ? <form onSubmit={this.handleSubmit}><input value={item.text}
+                     onChange={this.props.onItemChange.bind(null, item.id)}/></form>
+        : <div className={classes}>
+            <span onClick={this.props.onItemClick.bind(null, item)}>{item.text}</span>
+            <button className="item-done-btn" onClick={this.props.onItemDone.bind(null, this.props.item.id)}>Done</button>
+            <button onClick={this.props.onItemDelete.bind(null, this.props.item.id)}>Delete</button>
+          </div>
+    },
+
     render: function(){
-      return this.props.item.edit
-        ? <li><form onSubmit={this.handleSubmit}><input value={this.props.item.text}
-                     onChange={this.props.onItemChange.bind(null, this.props.item.id)}/></form></li>
-        : <li onClick={this.props.onItemClick.bind(null, this.props.item)}> {this.props.item.text}</li>;
+      return <div>
+        <li>
+          {this.renderItem(this.props.item)}
+        </li>
+      </div>
     }
 });
 
@@ -26,7 +42,9 @@ var TodoList = React.createClass({
               {this.props.items.map(function(item){
                 return <TodoItem item={item} onItemClick={this.props.onItemClick}
                     onItemChange={this.props.onItemChange}
-                    onItemEditDone={this.props.onItemEditDone}/>;
+                    onItemEditDone={this.props.onItemEditDone}
+                    onItemDone={this.props.onItemDone}
+                    onItemDelete={this.props.onItemDelete}/>;
               }.bind(this))}
           </ul>);
     }
@@ -48,23 +66,33 @@ var TodoApp = React.createClass({
     },
 
     onItemClick: function(item){
+      if (!item.done){
         item.edit = true;
-        var newItems = Array.prototype.slice.apply(this.state.items);
-        this.setState({items: newItems});
+        this.setState({items: this.state.items});
+      }
     },
 
     onItemChange: function(id, e){
-        var newItems = Array.prototype.slice.apply(this.state.items);
-        item = _.findWhere(newItems, {id: id});
-        item.text = e.target.value;
-        this.setState({items: newItems});
+      item = _.findWhere(this.state.items, {id: id});
+      item.text = e.target.value;
+      this.setState({items: this.state.items});
     },
 
     onItemEditDone: function(id){
-        var newItems = Array.prototype.slice.apply(this.state.items);
-        item = _.findWhere(newItems, {id: id});
-        item.edit = false;
-        this.setState({items: newItems});
+      item = _.findWhere(this.state.items, {id: id});
+      item.edit = false;
+      this.setState({items: this.state.items});
+    },
+
+    onItemDone: function(id){
+      item = _.findWhere(this.state.items, {id: id});
+      item.done = true;
+      this.setState({items: this.state.items});
+    },
+
+    onItemDelete: function(id){
+      var newItems = _.reject(this.state.items, function(item) { return item.id == id });
+      this.setState({items: newItems});
     },
 
     render: function(){
@@ -77,7 +105,9 @@ var TodoApp = React.createClass({
             <TodoList items={this.state.items}
                 onItemClick={this.onItemClick}
                 onItemChange={this.onItemChange}
-                onItemEditDone={this.onItemEditDone}/>
+                onItemEditDone={this.onItemEditDone}
+                onItemDone={this.onItemDone}
+                onItemDelete={this.onItemDelete}/>
           </div>
         );
     }
