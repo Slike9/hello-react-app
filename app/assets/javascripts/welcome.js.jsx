@@ -67,13 +67,13 @@ var TodoList = React.createClass({
 
 var TodoApp = React.createClass({
     getInitialState: function(){
-      return {items: [], text: new_item_placeholder, counter: 0};
+      return {items: [], text: "", counter: 0};
     },
 
     handleSubmit: function(e){
       e.preventDefault();
-      var new_items = this.state.items.concat([{text: this.state.text, id: this.state.counter}]);
-      this.setState({text: new_item_placeholder, items: this.orderItems(new_items), counter: this.state.counter + 1});
+      var new_items = this.state.items.concat([{text: this.state.text || new_item_placeholder, id: this.state.counter}]);
+      this.setState({text: "", items: this.orderItems(new_items), counter: this.state.counter + 1});
     },
 
     onChange: function(e){
@@ -124,24 +124,15 @@ var TodoApp = React.createClass({
       this.setState({items: newItems});
     },
 
-    onNewItemFocus: function(){
-      this.setState({text: ""});
-    },
-
-    onNewItemBlur: function(){
-      this.setState({text: new_item_placeholder});
-    },
-
     render: function(){
         return (
           <div>
             <form className='form-inline' role='form' onSubmit={this.handleSubmit}>
               <div className='form-group'>
                 <input
+                  placeholder={new_item_placeholder}
                   className='form-control'
                   onChange={this.onChange}
-                  onFocus={this.onNewItemFocus}
-                  onBlur={this.onNewItemBlur}
                   value={this.state.text}/>
               </div>
               <button className='btn btn-primary'>Submit</button>
