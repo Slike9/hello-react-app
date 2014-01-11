@@ -17,7 +17,7 @@ var TodoItem = React.createClass({
     renderItem: function(item){
       var cx = React.addons.classSet;
       var classes = cx({
-        'item-done': item.state == "done",
+        'item-done': item.state == "done"
       });
       return item.state == "edit"
         ? <tr>
@@ -68,7 +68,8 @@ var TodoList = React.createClass({
           <table className="table table-stropped">
             <tbody>
               {this.props.items.map(function(item){
-                return <TodoItem item={item} onItemClick={this.props.onItemClick}
+                return <TodoItem item={item}
+                    onItemClick={this.props.onItemClick}
                     onItemChange={this.props.onItemChange}
                     onItemEditDone={this.props.onItemEditDone}
                     onItemDone={this.props.onItemDone}
@@ -103,26 +104,25 @@ var TodoApp = React.createClass({
     },
 
     onItemChange: function(id, e){
-      item = _.findWhere(this.state.items, {id: id});
+      var item = _.findWhere(this.state.items, {id: id});
       item.text = e.target.value;
       this.setState({items: this.state.items});
     },
 
     onItemEditDone: function(id){
-      item = _.findWhere(this.state.items, {id: id});
+      var item = _.findWhere(this.state.items, {id: id});
       item.state = "active";
       this.setState({items: this.state.items});
     },
 
-
     onItemDone: function(id){
-      item = _.findWhere(this.state.items, {id: id});
+      var item = _.findWhere(this.state.items, {id: id});
       item.state = "done";
       this.setState({items: this.orderItems(this.state.items)});
     },
 
     onItemDoneChange: function(id, done){
-      item = _.findWhere(this.state.items, {id: id});
+      var item = _.findWhere(this.state.items, {id: id});
       item.state = done ? "done" : 'active';
       this.setState({items: this.orderItems(this.state.items)});
     },
@@ -167,4 +167,3 @@ var TodoApp = React.createClass({
 $(function(){
     React.renderComponent(<TodoApp/>, document.getElementById('todo-app'));
 });
-
