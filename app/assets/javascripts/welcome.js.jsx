@@ -23,7 +23,7 @@ var TodoItem = React.createClass({
         ? <form onSubmit={this.handleSubmit}><input value={item.text}
                      onChange={this.props.onItemChange.bind(null, item.id)}/></form>
         : <div className={classes}>
-            <input type='checkbox' onChange={this.onDoneChange}/>
+            <input type='checkbox' onChange={this.onDoneChange} checked={item.state == "done"}/>
             <span className='item__text' onClick={this.props.onItemClick.bind(null, item)}>{item.text}</span>
             <button className="btn btn-xs btn-success item-done-btn" onClick={this.props.onItemDone.bind(null, this.props.item.id)}>Done</button>
             <button className="btn btn-xs btn-danger" onClick={this.props.onItemDelete.bind(null, this.props.item.id)}>Delete</button>
