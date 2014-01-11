@@ -5,6 +5,17 @@
 
 var new_item_placeholder = 'Add text here';
 
+var TodoList = React.createClass({
+    render: function(){
+        return (
+          <ul>
+              {this.props.items.map(function(item){
+                  return <li>{item}</li>;
+              })}
+          </ul>);
+    }
+});
+
 var TodoApp = React.createClass({
     getInitialState: function(){
       return {items: [], text: new_item_placeholder};
@@ -27,11 +38,7 @@ var TodoApp = React.createClass({
               <input onChange={this.onChange} value={this.state.text}/>
               <button>Submit</button>
             </form>
-            <ul>
-              {this.state.items.map(function(item){
-                return <li>{item}</li>;
-              })}
-            </ul>
+            <TodoList items={this.state.items}/>
           </div>
         );
     }
