@@ -25,13 +25,13 @@ var TodoItem = React.createClass({
       return item.state == "edit"
         ? <tr>
             <td className='item__doneMark'/>
-            <td>
+            <td colSpan='2'>
               <form
                 className="form-inline"
                 onSubmit={this.handleSubmit}>
                 <div className="form-group">
                   <input
-                    className="form-control"
+                    className="form-control item__editText"
                     value={item.newText}
                     onChange={this.props.onItemChange.bind(null, item.id)}/>
                 </div>
@@ -39,7 +39,6 @@ var TodoItem = React.createClass({
                 <button type='button' className='btn btn-danger btn-sm' onClick={this.cancelEdit}>Cancel</button>
               </form>
             </td>
-            <td className='item__actions'/>
           </tr>
         : <tr className={classes}>
             <td className='item__doneMark'>
@@ -185,7 +184,7 @@ var TodoApp = React.createClass({
                 <div className='form-group'>
                   <input
                     placeholder={new_item_placeholder}
-                    className='form-control'
+                    className='form-control adding-item-text'
                     onChange={this.onChange}
                     value={this.state.text}/>
                 </div>
