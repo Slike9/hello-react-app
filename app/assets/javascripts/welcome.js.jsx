@@ -24,7 +24,6 @@ var TodoItem = React.createClass({
                      onChange={this.props.onItemChange.bind(null, item.id)}/></form>
         : <div className={classes}>
             <input type='checkbox' onChange={this.onDoneChange} checked={item.state == "done"}/>
-
             <span className='item__text' onClick={this.props.onItemClick.bind(null, item)}>{item.text}</span>
 
             <button
@@ -74,7 +73,7 @@ var TodoApp = React.createClass({
     handleSubmit: function(e){
       e.preventDefault();
       var new_items = this.state.items.concat([{text: this.state.text, id: this.state.counter}]);
-      this.setState({text: new_item_placeholder, items: new_items, counter: this.state.counter + 1});
+      this.setState({text: new_item_placeholder, items: this.orderItems(new_items), counter: this.state.counter + 1});
     },
 
     onChange: function(e){
@@ -100,16 +99,24 @@ var TodoApp = React.createClass({
       this.setState({items: this.state.items});
     },
 
+
     onItemDone: function(id){
       item = _.findWhere(this.state.items, {id: id});
       item.state = "done";
-      this.setState({items: this.state.items});
+      this.setState({items: this.orderItems(this.state.items)});
     },
 
     onItemDoneChange: function(id, done){
       item = _.findWhere(this.state.items, {id: id});
       item.state = done ? "done" : 'active';
-      this.setState({items: this.state.items});
+      this.setState({items: this.orderItems(this.state.items)});
+    },
+
+    orderItems: function(items){
+        var itemsById = _.sortBy(items, function(item){return item.id});
+        var activeItems = _.filter(itemsById, function(item){ return item.state != 'done'; });
+        var doneItems = _.filter(itemsById, function(item){ return item.state == 'done'; });
+        return activeItems.concat(doneItems);
     },
 
     onItemDelete: function(id){
