@@ -2,13 +2,7 @@
 
 var TodoItem = React.createClass({
   getInitialState: function(){
-    return {isEdit: false, text: '', state: 'normal'};
-  },
-  componentDidUpdate: function(){
-    if (this.refs.itemText && this.state.state == 'editStart'){
-      this.refs.itemText.getDOMNode().focus();
-      this.setState({state: 'edit'});
-    }
+    return {text: '', state: 'show'};
   },
   handleSubmit: function(e){
     e.preventDefault();
@@ -16,13 +10,15 @@ var TodoItem = React.createClass({
   },
   saveItemText: function(){
     this.props.onItemEditDone({id: this.props.item.id, text: this.state.text});
-    this.setState({state: 'normal'});
+    this.setState({state: 'show'});
   },
   startEditText: function(){
-    this.setState({state: 'editStart', text: this.props.item.text});
+    this.setState({state: 'edit', text: this.props.item.text}, function(){
+      this.refs.itemText.getDOMNode().focus();
+    });
   },
   cancelEditText: function(){
-    this.setState({state: 'normal'});
+    this.setState({state: 'show'});
   },
   onTextChange: function(e){
     this.setState({text: e.target.value});
@@ -71,7 +67,7 @@ var TodoItem = React.createClass({
           <input type='checkbox' onChange={this.onDoneChange} checked={item.state == "done"}/>
         </td>
         <td>
-          <span className='item__text' onClick={this.startEditText}>{item.text}</span>
+          <a className='item__text' onClick={this.startEditText}>{item.text}</a>
         </td>
         <td className='item__actions'>
           <div>
@@ -94,6 +90,6 @@ var TodoItem = React.createClass({
 
   render: function(){
     var item = this.props.item;
-    return _.include(['editStart', 'edit'], this.state.state) ? this.renderEditState(item) : this.renderNormalState(item);
+    return this.state.state == 'edit' ? this.renderEditState(item) : this.renderNormalState(item);
   }
 });
