@@ -1,6 +1,12 @@
 /** @jsx React.DOM */
 
 var TodoItem = React.createClass({
+  propTypes: {
+    item: React.PropTypes.object.isRequired,
+    onItemStateChange: React.PropTypes.func.isRequired,
+    onItemEditDone: React.PropTypes.func.isRequired,
+    onItemDelete: React.PropTypes.func.isRequired
+  },
   getInitialState: function(){
     return {text: '', state: 'show'};
   },
